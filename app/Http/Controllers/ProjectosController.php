@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\projectos;
 use App\Models\Lista;
+use App\Models\Quadro_membros;
 use Auth;
 use Inertia\Inertia;
+use App\Notifications\Addproject;
 
 class ProjectosController extends Controller
 {
@@ -20,10 +22,12 @@ class ProjectosController extends Controller
     {
         $user_id =  Auth::user()->id;
         $quadros = projectos::getAll($user_id);
+        $quadros_membros = Quadro_membros::ListarQuadros($user_id);
 
-        ///dd($quadros);
+        //dd($quadros_membros);
         return Inertia::render('Dashboard',[
-            'quadros' => $quadros
+            'quadros' => $quadros,
+            'quadro_membros' => $quadros_membros
         ]);
         
     }
@@ -88,6 +92,8 @@ class ProjectosController extends Controller
             Lista::create($lista_1);
             Lista::create($lista_2);
             Lista::create($lista_3);
+
+            $user->notify(new Addproject($invoice));
          
         //return redirect('/');
         
@@ -102,6 +108,35 @@ class ProjectosController extends Controller
 
 
     }
+    public function AdicionarMembro(Request $request)
+    {
+        /*$request->validate([
+            'id_membro' => 'required|string|max:255',  
+                      
+        ]);*/
+                
+            
+        $id_project = $request->quadro_id;
+        $id_membro = $request->id_membro;
+        $id_user   = Auth::user()->id;
+        
+            $dados = ([
+                'id_quadro' => $id_project,
+                'id_membro' => $id_membro,
+                'id_owner'  => $id_user
+            ]);
+
+            Quadro_membros::create($dados);
+
+        $data = projectos::getUnique($id_project);
+        $boards = Lista::getLista($id_project);
+        
+      
+        return redirect()->route('board',$id_project);
+       
+
+
+    }
 
     /**
      * Display the specified resource.
@@ -112,16 +147,26 @@ class ProjectosController extends Controller
     public function show($id)
     {
         $data = projectos::getUnique($id);
-        //dd($data);
+       
 
         $project_id = $data->id;
-        //dd($project_id);
-       $boards = Lista::getLista($data->id);
-       //dd($boards);
+       
+        $boards = Lista::getLista($data->id);
+       
+        $auth = Auth()->user()->id;
+       
+        $membros = User::membros($auth);
+
+        //dd($membros);
+
+
+
         return Inertia::render('Board',[
             'quadro' => $data,
             'listas' => $boards,
-            'quadro_id' =>$project_id
+            'quadro_id' =>$project_id,
+            'membros'  => $membros,
+            'user_id'  => $auth
         ]);
         //return redirect()->route('board',$id);
 

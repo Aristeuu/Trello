@@ -30,6 +30,7 @@ export default {
         },
         props: {
             quadros: Object,
+            quadro_membros:Object
         },
         data() {
             return {
@@ -57,6 +58,12 @@ export default {
                         <div v-for="quadro in quadros">
                          <Link :href="route('board',quadro.id)" class="underline text-sm text-gray-600 hover:text-gray-900">
                                 {{quadro.titulo}}
+                        </Link> 
+                           
+                        </div>
+                        <div v-for="quadro_membro in quadro_membros">
+                         <Link :href="route('board',quadro_membro.id)" class="underline text-sm text-gray-600 hover:text-gray-900">
+                                {{quadro_membro.titulo}}
                         </Link> 
                            
                         </div>

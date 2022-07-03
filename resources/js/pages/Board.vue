@@ -16,11 +16,14 @@ export default {
             quadro: Object,
             listas: Object,
             quadro_id: '',
+            membros: Object,
+            user_id: Object
     },
     setup(props) {
         const form = useForm({
             quadro_id: props.quadro_id,
-            titulo: ''
+            titulo: '',
+            id_membro:''
         })
 
 
@@ -60,14 +63,17 @@ export default {
                            
                         </div>
                     </div>
-                    <button id="show-modal" @click="showModal = true">Adicionar Quadro</button>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button id="membros-modal" @click="membrosmodal = true">Adicionar Membros</button>                    
+                    <button id="show-modal" @click="showModal = true">Adicionar Lista</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div v-if="quadro.user_id == user_id">
+                        <button id="membros-modal" @click="membrosmodal = true">Adicionar Membros</button>                    
+                    </div>
+                    
   
                     <Teleport to="body">
                         <!-- use the modal component, pass in the prop -->
                         <modal :show="showModal" @close="showModal = false">
                         <template #header>
-                            <h3>Adicionar Projecto</h3>
+                            <h3>Adicionar Lista</h3>
                         </template>
                         <template #body>
                                 
@@ -102,10 +108,14 @@ export default {
                         </template>
                         <template #body>
                                 
-                                 <form @submit.prevent="form.post(route('board.store'))">
+                                 <form @submit.prevent="form.post(route('board_membro.store'))">
                                     <div>
-                                        <BreezeLabel for="titulo" value="Título" />
-                                        <BreezeInput id="titulo" type="text" class="mt-1 block w-full" v-model="form.titulo" required autofocus autocomplete="titulo" />
+                                        <BreezeLabel for="titulo" />
+                                        <select id="titulo" v-model="form.id_membro">
+                                            <option>seleccionar membros</option>
+                                            <option v-for="membro in membros" :key="membro.id" :value="membro.id" >{{membro.nome}}</option>
+                                        </select>
+                                        
                                     </div>
 
                                     

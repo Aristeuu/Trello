@@ -39,6 +39,8 @@ Route::get('/board/{id}', [ProjectosController::class,'show'])->middleware(['aut
 
 Route::post('/board', [ListaController::class,'store'])->middleware(['auth'])->name('board.store');
 
+Route::post('/board_membro',[ProjectosController::class,'AdicionarMembro'])->middleware(['auth'])->name('board_membro.store');
+
 /*Route::get('/board/{id}',function () {
     return Inertia::render('Home');
 })->middleware(['auth', 'verified'])->name('board');
