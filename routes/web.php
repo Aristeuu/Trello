@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ProjectosController;
 use App\Http\Controllers\ListaController;
+use App\Http\Controllers\PortalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,16 +17,21 @@ use App\Http\Controllers\ListaController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     /*return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-    ]);*/
-    return redirect()->route('register');
-});
+    ]);
+    //return redirect()->route('register');
+})->name('home');
+*/
+Route::get('/',[PortalController::class,'index'])->name('home');
+
+Route::inertia('/sobreNos','About')->name('about');
+
 /*
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
